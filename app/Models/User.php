@@ -52,7 +52,7 @@ class User extends Authenticatable
     }
 
     public function badge() {
-        return $this->hasOne(Badge::class);
+        return $this->belongsTo(Badge::class);
     }
 
     public function achievements() {

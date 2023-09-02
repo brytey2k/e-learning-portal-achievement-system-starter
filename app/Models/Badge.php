@@ -8,4 +8,9 @@ use Illuminate\Database\Eloquent\Model;
 class Badge extends Model
 {
     use HasFactory;
+
+    public function getNextBadge(): ?Badge
+    {
+        return static::where('id', '>', $this->id)->first();
+    }
 }

@@ -2,6 +2,7 @@
 
 namespace App\Libraries\Services;
 
+use App\Events\AchievementUnlocked;
 use App\Libraries\Enums\AchievementType;
 use App\Models\Achievement;
 use App\Models\User;
@@ -65,6 +66,8 @@ class AchievementService
     public function unlockAchievement(User $user, Achievement $achievement): void
     {
         $user->achievements()->syncWithoutDetaching($achievement->id);
+
+        event(new AchievementUnlocked($achievement->name, $user));
     }
 
     public function getFirstAchievement(AchievementType $achievementType): Achievement

@@ -44,11 +44,20 @@ class User extends Authenticatable
     ];
 
     public function watched() {
-        return $this->belongsToMany(LessonUser::class, 'lesson_user', 'user_id', 'lesson_id');
+        return $this->belongsToMany(Lesson::class, 'lesson_user', 'user_id', 'lesson_id');
     }
 
     public function comments() {
         return $this->hasMany(Comment::class);
+    }
+
+    public function badge() {
+        return $this->hasOne(Badge::class);
+    }
+
+    public function achievements() {
+        return $this->belongsToMany(Achievement::class, 'user_achievements', 'user_id', 'achievement_id')
+            ->withTimestamps();
     }
 
 }

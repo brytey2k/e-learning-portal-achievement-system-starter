@@ -28,8 +28,10 @@ class WatchLesson extends Command
      */
     public function handle()
     {
+        $userId = (int) $this->option('user');
+
         $lesson = Lesson::find((int) $this->option('lesson'));
-        $user = User::find((int) $this->option('user'));
+        $user = User::find($userId);
 
         if (!$lesson) {
             $this->error('Lesson not found');

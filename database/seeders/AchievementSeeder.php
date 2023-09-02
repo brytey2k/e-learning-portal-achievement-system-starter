@@ -31,7 +31,7 @@ class AchievementSeeder extends Seeder
             3 => '3 Comments Written',
             5 => '5 Comments Written',
             10 => '10 Comments Written',
-            50 => '20 Comments Written',
+            20 => '20 Comments Written',
         ])->each(fn ($achievement, $targetCount) => Achievement::factory()->create([
             'name' => $achievement,
             'type' => AchievementType::COMMENTS_WRITTEN,

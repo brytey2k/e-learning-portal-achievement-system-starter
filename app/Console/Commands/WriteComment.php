@@ -48,6 +48,6 @@ class WriteComment extends Command
         $this->info('Comment written');
 
         // fire event
-        event(new CommentWritten($comment, $user));
+        event(new CommentWritten($comment));
     }
 }

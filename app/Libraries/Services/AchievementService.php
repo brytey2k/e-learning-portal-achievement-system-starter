@@ -28,10 +28,14 @@ class AchievementService
 
     public function unlockNextAchievement(User $user, AchievementType $achievementType): void
     {
+        // get strategy for the achievement type
+        $strategy = $this->strategies[$achievementType->value];
+
         $latestAchievement = $this->getLatestAchievement($user, $achievementType);
 
+        // if the user does not have any achievement, unlock the first one
         if (!$latestAchievement) {
-            $user->achievements()->syncWithoutDetaching($this->getFirstAchievement($achievementType)->id);
+            $strategy->unlockIfNotUnlocked($user, $this->getFirstAchievement($achievementType));
             return;
         }
 
@@ -40,7 +44,6 @@ class AchievementService
             return;
         }
 
-        $strategy = $this->strategies[$achievementType->value];
         $strategy->unlockIfNotUnlocked($user, $nextAchievement);
     }
 

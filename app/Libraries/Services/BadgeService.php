@@ -2,9 +2,7 @@
 
 namespace App\Libraries\Services;
 
-use App\Events\AchievementUnlocked;
 use App\Events\BadgeUnlocked;
-use App\Models\Achievement;
 use App\Models\Badge;
 use App\Models\User;
 
@@ -20,26 +18,43 @@ class BadgeService
     {
         $user->load(['badge', 'achievements']);
 
-        $nextBadge = $user->badge->getNextBadge();
+        $nextBadge = $this->getNextUserBadge($user);
         if(!$nextBadge) {
             return;
         }
 
-        $this->unlockBadgeIfNotUnLocked($user, $nextBadge);
+        $this->unlockBadgeIfNotUnlocked($user, $nextBadge);
     }
 
-    protected function unlockBadgeIfNotUnLocked(User $user, Badge $nextBadge): void
+    protected function getNextUserBadge(User $user): ?Badge
     {
-        if($user->achievements->count() < $nextBadge->achievements_required) {
+        return $user->badge->getNextBadge();
+    }
+
+    protected function hasRequiredAchievements(User $user, Badge $nextBadge): bool
+    {
+        return $user->achievements->count() >= $nextBadge->achievements_required;
+    }
+
+    protected function unlockBadgeIfNotUnlocked(User $user, Badge $nextBadge): void
+    {
+        if (!$this->hasRequiredAchievements($user, $nextBadge)) {
             return;
         }
 
-        if($user->badge->id < $nextBadge->id) {
-            $user->badge()->associate($nextBadge);
-            $user->save();
+        $this->unlockBadge($user, $nextBadge);
+    }
 
-            event(new BadgeUnlocked($nextBadge->name, $user));
+    protected function unlockBadge(User $user, Badge $nextBadge): void
+    {
+        if($user->badge->id >= $nextBadge->id) {
+            return;
         }
+
+        $user->badge()->associate($nextBadge);
+        $user->save();
+
+        event(new BadgeUnlocked($nextBadge->name, $user));
     }
 
 }

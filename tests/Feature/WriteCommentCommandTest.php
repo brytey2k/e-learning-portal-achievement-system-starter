@@ -21,4 +21,15 @@ class WriteCommentCommandTest extends TestCase
         $output->assertExitCode(0);
     }
 
+    public function testMissingUserWillGiveAnError(): void
+    {
+        $this->seed();
+
+        $output = $this->artisan('app:write-comment', [
+            '--user' => 9999953
+        ]);
+
+        $output->expectsOutput('User not found');
+    }
+
 }

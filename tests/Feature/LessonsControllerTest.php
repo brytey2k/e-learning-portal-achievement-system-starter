@@ -15,7 +15,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 
-class LessonTest extends TestCase
+class LessonsControllerTest extends TestCase
 {
 
     use RefreshDatabase;
@@ -31,11 +31,14 @@ class LessonTest extends TestCase
 
     public function testAnAuthenticatedUserCanWatchALesson(): void
     {
-        $this->seed();
-
         $lesson = Lesson::factory()->create();
         $user = User::factory()->create([
-            'badge_id' => Badge::first()->id,
+            'badge_id' => Badge::factory()->create()->id,
+        ]);
+        Achievement::factory()->create([
+            'name' => 'Watched 3 Lessons',
+            'target_count' => 3,
+            'type' => AchievementType::LESSONS_WATCHED,
         ]);
 
         $this->actingAs($user);
@@ -55,12 +58,15 @@ class LessonTest extends TestCase
     public function testWatchingEnoughLessonsUnlocksAchievement(): void
     {
         Event::fake(AchievementUnlocked::class);
-        $this->seed();
 
         $user = User::factory()->create([
-            'badge_id' => Badge::first()->id,
+            'badge_id' => Badge::factory(['achievements_required' => 0])->create()->id,
         ]);
-        $achievement = Achievement::first();
+        $achievement = Achievement::factory()->create([
+            'name' => 'Watched 3 Lessons',
+            'target_count' => 3,
+            'type' => AchievementType::LESSONS_WATCHED,
+        ]);
 
         $this->actingAs($user);
 

@@ -5,12 +5,13 @@ namespace App\Libraries\Services;
 use App\Events\BadgeUnlocked;
 use App\Models\Badge;
 use App\Models\User;
+use Illuminate\Cache\Repository as Cache;
 use Psr\Log\LoggerInterface;
 
 class BadgeService
 {
 
-    public function __construct(private readonly LoggerInterface $logger)
+    public function __construct(private readonly LoggerInterface $logger, private readonly Cache $cache)
     {
         //
     }
@@ -78,6 +79,9 @@ class BadgeService
 
         $user->badge()->associate($nextBadge);
         $user->save();
+
+        // invalidate cache
+        $this->cache->forget("achievements.{$user->id}");
 
         $this->logger->info('Unlocked new badge for user.',
             ['user_id' => $user->id, 'new_badge_id' => $nextBadge->id]);

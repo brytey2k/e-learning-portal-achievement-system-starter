@@ -19,10 +19,6 @@ class Lesson extends Model
         'title'
     ];
 
-    public function user() {
-        return $this->belongsTo(User::class);
-    }
-
     public function markAsWatchedBy(User $user): void
     {
         $user->watched()->syncWithoutDetaching([

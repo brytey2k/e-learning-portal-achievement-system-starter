@@ -13,6 +13,7 @@ class LessonsWatchedStrategy extends AchievementUnlockStrategy
 
     public function __construct()
     {
+        parent::__construct();
         $this->logger = app(LoggerInterface::class);
     }
 

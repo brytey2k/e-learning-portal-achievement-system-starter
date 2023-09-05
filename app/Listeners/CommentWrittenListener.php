@@ -10,15 +10,11 @@ use Illuminate\Queue\InteractsWithQueue;
 
 class CommentWrittenListener
 {
-
-    protected AchievementService $achievementService;
-
     /**
      * Create the event listener.
      */
-    public function __construct()
+    public function __construct(private readonly AchievementService $achievementService)
     {
-        $this->achievementService = new AchievementService();
     }
 
     /**

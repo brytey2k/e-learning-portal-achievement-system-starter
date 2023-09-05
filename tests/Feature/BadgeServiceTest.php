@@ -23,7 +23,7 @@ class BadgeServiceTest extends TestCase
             'badge_id' => Badge::factory()->create(['achievements_required' => 0])->id,
         ]);
 
-        $this->assertEmpty((new BadgeService())->unlockNextBadge($user));
+        $this->assertEmpty(app(BadgeService::class)->unlockNextBadge($user));
         Event::assertNotDispatched(BadgeUnlocked::class);
     }
 }

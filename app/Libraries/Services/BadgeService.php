@@ -26,6 +26,12 @@ class BadgeService
         $this->unlockBadgeIfNotUnlocked($user, $nextBadge);
     }
 
+    public function getRemainingToUnlockNextBadge(?Badge $nextBadge, User $user): int
+    {
+        return $nextBadge ?
+            $nextBadge->achievements_required - $user->achievements->count() : 0;
+    }
+
     protected function getNextUserBadge(User $user): ?Badge
     {
         return $user->badge->getNextBadge();

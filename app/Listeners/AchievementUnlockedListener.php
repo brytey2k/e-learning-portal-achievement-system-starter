@@ -10,13 +10,11 @@ use Illuminate\Queue\InteractsWithQueue;
 class AchievementUnlockedListener
 {
 
-    protected BadgeService $badgeService;
     /**
      * Create the event listener.
      */
-    public function __construct()
+    public function __construct(private readonly BadgeService $badgeService)
     {
-        $this->badgeService = new BadgeService();
     }
 
     /**

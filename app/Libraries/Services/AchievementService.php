@@ -2,7 +2,6 @@
 
 namespace App\Libraries\Services;
 
-use App\Events\AchievementUnlocked;
 use App\Libraries\Achievements\AchievementUnlockStrategy;
 use App\Libraries\Achievements\CommentsWrittenStrategy;
 use App\Libraries\Achievements\LessonsWatchedStrategy;
@@ -52,6 +51,13 @@ class AchievementService
         return Achievement::where('id', '>', $achievement->id)
             ->where('type', '=', $achievementType->value)
             ->first();
+    }
+
+    public function getNextAvailableAchievements(User $user): array
+    {
+        return Achievement::whereDoesntHave('users', function($query) use ($user) {
+            $query->where('user_id', '=', $user->id);
+        })->pluck('name')->toArray();
     }
 
     public function getFirstAchievement(AchievementType $achievementType): Achievement

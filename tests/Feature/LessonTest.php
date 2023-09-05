@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use App\Events\AchievementUnlocked;
+use App\Events\BadgeUnlocked;
 use App\Libraries\Enums\AchievementType;
 use App\Listeners\AchievementUnlockedListener;
 use App\Models\Achievement;
@@ -76,6 +77,39 @@ class LessonTest extends TestCase
 
         Event::assertDispatched(AchievementUnlocked::class);
         Event::assertListening(AchievementUnlocked::class, AchievementUnlockedListener::class);
+    }
+
+    public function testWatchingRequiredLessonsUnlocksBadge(): void
+    {
+        Event::fake(BadgeUnlocked::class);
+
+        Achievement::factory()->create([
+            'name' => 'Watched 3 Lessons',
+            'target_count' => 0,
+            'type' => AchievementType::LESSONS_WATCHED,
+        ]);
+
+        $firstBadge = Badge::factory()->create([
+            'achievements_required' => 0,
+        ]);
+        $secondBadge = Badge::factory()->create([
+            'achievements_required' => 1,
+        ]);
+
+        $user = User::factory()->create([
+            'badge_id' => $firstBadge->id,
+        ]);
+
+        $this->actingAs($user);
+
+        $lessons = Lesson::factory()->count(3)->create();
+        foreach($lessons as $lesson) {
+            $this->get(route('lessons.view', ['lesson' => $lesson->id]));
+        }
+
+        $this->assertEquals($secondBadge->id, $user->badge->id);
+
+        Event::assertDispatched(BadgeUnlocked::class);
     }
 
 }

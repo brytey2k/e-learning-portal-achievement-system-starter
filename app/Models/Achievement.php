@@ -9,6 +9,8 @@ class Achievement extends Model
 {
     use HasFactory;
 
+    protected $fillable = ['name', 'target_count', 'type'];
+
     public function users() {
         return $this->belongsToMany(User::class, 'user_achievements', 'achievement_id', 'user_id')
             ->withTimestamps();

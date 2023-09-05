@@ -17,7 +17,8 @@ class BadgeFactory extends Factory
     public function definition(): array
     {
         return [
-            //
+            'name' => $this->faker->word,
+            'achievements_required' => $this->faker->numberBetween(0, 100),
         ];
     }
 }

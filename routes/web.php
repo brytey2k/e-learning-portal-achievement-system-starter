@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AchievementsController;
+use App\Http\Controllers\LessonsController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -16,6 +17,10 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     return view('welcome');
-});
+})->name('home');
 
 Route::get('/users/{user}/achievements', [AchievementsController::class, 'index']);
+
+Route::name('lessons.')->prefix('lessons')->middleware('auth')->group(function() {
+    Route::get('/lessons/{lesson}/view', [LessonsController::class, 'view'])->name('view');
+});

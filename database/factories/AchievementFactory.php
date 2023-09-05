@@ -20,6 +20,7 @@ class AchievementFactory extends Factory
         return [
             'name' => $this->faker->word,
             'type' => $this->faker->randomElement([AchievementType::LESSONS_WATCHED, AchievementType::COMMENTS_WRITTEN]),
+            'target_count' => $this->faker->numberBetween(1, 10),
         ];
     }
 }

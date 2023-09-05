@@ -19,7 +19,7 @@ Route::get('/', function () {
     return view('welcome');
 })->name('home');
 
-Route::get('/users/{user}/achievements', [AchievementsController::class, 'index']);
+Route::get('/users/{user}/achievements', [AchievementsController::class, 'index'])->name('users.achievements.index');
 
 Route::name('lessons.')->prefix('lessons')->middleware('auth')->group(function() {
     Route::get('/lessons/{lesson}/view', [LessonsController::class, 'view'])->name('view');
